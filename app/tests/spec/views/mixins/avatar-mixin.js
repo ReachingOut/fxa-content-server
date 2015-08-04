@@ -119,7 +119,7 @@ define([
 
     describe('updateProfileImage', function () {
       it('stores the url', function () {
-        view.updateProfileImage(new ProfileImage({ url: 'url' }))
+        return view.updateProfileImage(new ProfileImage({ url: 'url' }))
           .then(function () {
             assert.equal(account.get('profileImageUrl'), 'url');
             assert.isTrue(view.getSignedInAccount.called);
@@ -152,7 +152,7 @@ define([
 
     describe('updateDisplayName', function () {
       it('stores the name', function () {
-        view.updateDisplayName('joe')
+        return view.updateDisplayName('joe')
           .then(function () {
             assert.equal(account.get('displayName'), 'joe');
             assert.isTrue(view.getSignedInAccount.called);

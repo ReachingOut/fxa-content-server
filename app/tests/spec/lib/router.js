@@ -35,7 +35,6 @@ function (chai, sinon, Backbone, Router, DisplayNameView, SignInView, SignUpView
   describe('lib/router', function () {
     var router;
     var windowMock;
-    var origNavigate;
     var navigateUrl;
     var navigateOptions;
     var metrics;
@@ -78,17 +77,16 @@ function (chai, sinon, Backbone, Router, DisplayNameView, SignInView, SignUpView
         environment: environment
       });
 
-      origNavigate = Backbone.Router.prototype.navigate;
-      Backbone.Router.prototype.navigate = function (url, options) {
+      sinon.stub(Backbone.Router.prototype, 'navigate', function (url, options) {
         navigateUrl = url;
         navigateOptions = options;
-      };
+      });
     });
 
     afterEach(function () {
       metrics.destroy();
       windowMock = router = navigateUrl = navigateOptions = metrics = null;
-      Backbone.Router.prototype.navigate = origNavigate;
+      Backbone.Router.prototype.navigate.restore();
       $('#container').empty();
     });
 
@@ -96,11 +94,13 @@ function (chai, sinon, Backbone, Router, DisplayNameView, SignInView, SignUpView
       beforeEach(function () {
         sinon.stub(window.history, 'pushState', function () {
         });
-        Backbone.Router.prototype.navigate = origNavigate;
+        Backbone.Router.prototype.navigate.restore();
         Backbone.history.start({ pushState: true });
       });
+
       afterEach(function () {
         Backbone.history.stop();
+        sinon.stub(Backbone.Router.prototype, 'navigate', function () { });
         window.history.pushState.restore();
       });
 
