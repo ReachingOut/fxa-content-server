@@ -5,14 +5,23 @@
 // helper functions for views with a profile image. Meant to be mixed into views.
 
 define([
+  'underscore',
   'lib/profile-errors',
   'models/profile-image'
-], function (ProfileErrors, ProfileImage) {
+], function (_, ProfileErrors, ProfileImage) {
   'use strict';
 
   return {
     initialize: function (options) {
       this.notifications = options.notifications;
+      if (this.notifications) {
+        this.notifications.on(this.notifications.EVENTS.PROFILE_CHANGE,
+          _.bind(this.onProfileUpdate, this));
+      }
+    },
+
+    onProfileUpdate: function (/* data */) {
+      // implement in view
     },
 
     displayAccountProfileImage: function (account, wrapperClass) {
@@ -43,6 +52,7 @@ define([
         })
         .then(function (profileImage) {
           self._displayedProfileImage = profileImage;
+          self._displayedProfileImageAccount = account;
 
           if (profileImage.isDefault()) {
             self.$(wrapperClass).addClass('with-default');
@@ -89,7 +99,7 @@ define([
       account.setProfileImage(profileImage);
       return self.user.setAccount(account)
         .then(function () {
-          self.notifications.profileChanged({
+          self.notifications.profileUpdated({
             uid: account.get('uid')
           });
         });
@@ -110,7 +120,7 @@ define([
       account.set('displayName', displayName);
       return self.user.setAccount(account)
         .then(function () {
-          self.notifications.profileChanged({
+          self.notifications.profileUpdated({
             uid: account.get('uid')
           });
         });

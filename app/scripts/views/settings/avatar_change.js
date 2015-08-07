@@ -134,11 +134,6 @@ function ($, Cocktail, FormView, AvatarMixin, SettingsMixin, ModalSettingsPanelM
       }
 
       return defer.promise;
-    },
-
-    // Hide Gravatar except for tests until #2515 is resolved
-    _shouldShowGravatar: function (email) {
-      return /^avatarAB-.+@restmail\.net$/.test(email);
     }
 
   });

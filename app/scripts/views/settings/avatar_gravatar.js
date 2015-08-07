@@ -9,7 +9,6 @@ define([
   'cocktail',
   'views/form',
   'views/mixins/avatar-mixin',
-  'views/mixins/back-mixin',
   'views/mixins/modal-settings-panel-mixin',
   'views/mixins/settings-mixin',
   'stache!templates/settings/avatar_gravatar',
@@ -18,7 +17,7 @@ define([
   'views/decorators/progress_indicator',
   'models/profile-image'
 ],
-function ($, _, md5, Cocktail, FormView, AvatarMixin, BackMixin, ModalSettingsPanelMixin, SettingsMixin,
+function ($, _, md5, Cocktail, FormView, AvatarMixin, ModalSettingsPanelMixin, SettingsMixin,
     Template, Constants, ImageLoader, showProgressIndicator, ProfileImage) {
   'use strict';
 
@@ -31,6 +30,12 @@ function ($, _, md5, Cocktail, FormView, AvatarMixin, BackMixin, ModalSettingsPa
   var View = FormView.extend({
     template: Template,
     className: 'avatar-gravatar',
+
+    events: {
+      'click #back': function () {
+        this.navigate('settings/avatar/change');
+      }
+    },
 
     context: function () {
       return {
@@ -98,7 +103,6 @@ function ($, _, md5, Cocktail, FormView, AvatarMixin, BackMixin, ModalSettingsPa
   Cocktail.mixin(
     View,
     AvatarMixin,
-    BackMixin,
     ModalSettingsPanelMixin,
     SettingsMixin
   );

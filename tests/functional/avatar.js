@@ -16,7 +16,6 @@ define([
   var AUTH_SERVER_ROOT = config.fxaAuthRoot;
   var SIGNIN_URL = config.fxaContentRoot + 'signin';
   var SETTINGS_URL = config.fxaContentRoot + 'settings';
-  var AVATAR_URL = config.fxaContentRoot + 'settings/avatar';
   var AVATAR_CHANGE_URL = config.fxaContentRoot + 'settings/avatar/change';
   var AVATAR_CHANGE_URL_AUTOMATED = config.fxaContentRoot + 'settings/avatar/change?automatedBrowser=true';
 
@@ -25,6 +24,7 @@ define([
   var email;
   var client;
   var emailAvatarAb;
+  var CHANGE_AVATAR_BUTTON_SELECTOR = '#change-avatar .settings-unit-toggle';
 
   function testIsBrowserNotifiedOfAvatarChange(context) {
     return FunctionalHelpers.testIsBrowserNotified(context, 'profile:change', function (data) {
@@ -80,12 +80,12 @@ define([
       return FunctionalHelpers.clearBrowserState(this);
     },
 
-    'go to avatars then avatar change': function () {
+    'go to settings then avatar change': function () {
       return this.remote
-        .get(require.toUrl(AVATAR_URL))
+        .get(require.toUrl(SETTINGS_URL))
 
         // go to change avatar
-        .findById('change-avatar')
+        .findByCssSelector(CHANGE_AVATAR_BUTTON_SELECTOR)
           .click()
         .end()
 
@@ -100,28 +100,8 @@ define([
 
         .setFindTimeout(intern.config.pageLoadTimeout)
 
-        .findByCssSelector('.avatar-view')
-        .end()
-
         // this link should not be present on the page at all
-        .then(FunctionalHelpers.noSuchElement(this, 'a.change-avatar'));
-    },
-
-    'go to settings with an email NOT selected to see change link should not see text link': function () {
-      return this.remote
-        .get(require.toUrl(SETTINGS_URL))
-        .setFindTimeout(intern.config.pageLoadTimeout)
-
-        .findByCssSelector('.avatar-view')
-        .end()
-
-        // this link will be present on the page, but not visible to the user.
-        .setFindTimeout(0)
-        .findByCssSelector('p.change-avatar-text a').isDisplayed()
-        .then(function (isDisplayed) {
-          assert.isFalse(isDisplayed);
-        })
-        .end();
+        .then(FunctionalHelpers.noSuchElement(this, '.avatar-wrapper a.change-avatar'));
     },
 
     'go to settings with an email selected to see change link then click on avatar to change': function () {
@@ -142,7 +122,7 @@ define([
         });
     },
 
-    'go to settings with an email selected to see change link then click on text link to change': function () {
+    'go to settings with an email selected to see change link then click on button to change': function () {
       var self = this;
       return signUp(self, emailAvatarAb)
         .then(function () {
@@ -150,7 +130,7 @@ define([
             .get(require.toUrl(SETTINGS_URL))
 
             // go to change avatar
-            .findByCssSelector('p.change-avatar-text a')
+            .findByCssSelector(CHANGE_AVATAR_BUTTON_SELECTOR)
               .click()
             .end()
 
@@ -190,7 +170,7 @@ define([
 
         .execute(FunctionalHelpers.listenForWebChannelMessage)
 
-        .findById('submit-btn')
+        .findByCssSelector('.avatar-panel #submit-btn')
           .click()
         .end()
 
@@ -214,7 +194,7 @@ define([
         .end()
 
         // Go back to the gravatar view to make sure permission prompt is skipped the second time
-        .findByCssSelector('.change-avatar-text a')
+        .findByCssSelector(CHANGE_AVATAR_BUTTON_SELECTOR)
           .click()
         .end()
 
@@ -222,7 +202,7 @@ define([
           .click()
         .end()
 
-        .findById('fxa-avatar-gravatar-header')
+        .findById('avatar-gravatar')
         .end();
     },
 
@@ -244,7 +224,7 @@ define([
         .findByCssSelector('img[src*="https://secure.gravatar.com"]')
         .end()
 
-        .findByCssSelector('a.cancel')
+        .findByCssSelector('.avatar-panel .cancel')
           .click()
         .end()
 
@@ -255,7 +235,7 @@ define([
         // give time for error to show up, there should be no error though
         .sleep(500)
 
-        .findByCssSelector('.error')
+        .findByCssSelector('.avatar-panel .error')
           .getVisibleText()
           .then(function (val) {
             assert.ok(! val, 'has no error text');
@@ -287,8 +267,8 @@ define([
         .end()
 
         // success is seeing the error text
-        .then(FunctionalHelpers.visibleByQSA('.error'))
-        .findByCssSelector('.error')
+        .then(FunctionalHelpers.visibleByQSA('.avatar-panel .error'))
+        .findByCssSelector('.avatar-panel .error')
           .getVisibleText()
           .then(function (val) {
             assert.ok(val, 'has error text');
@@ -308,7 +288,7 @@ define([
 
         .execute(FunctionalHelpers.listenForWebChannelMessage)
 
-        .findById('submit-btn')
+        .findByCssSelector('.avatar-panel #submit-btn')
           .click()
         .end()
 
@@ -329,7 +309,10 @@ define([
           .click()
         .end()
 
-        .findByCssSelector('a.cancel')
+        .findById('avatar-camera')
+        .end()
+
+        .findByCssSelector('.avatar-panel .cancel')
           .click()
         .end()
 
@@ -367,7 +350,7 @@ define([
 
         .execute(FunctionalHelpers.listenForWebChannelMessage)
 
-        .findById('submit-btn')
+        .findByCssSelector('.avatar-panel #submit-btn')
           .click()
         .end()
 
@@ -395,7 +378,7 @@ define([
         .findByCssSelector('.cropper')
         .end()
 
-        .findByCssSelector('.cancel')
+        .findByCssSelector('.avatar-panel .cancel')
           .click()
         .end()
 
