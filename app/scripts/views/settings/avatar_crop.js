@@ -98,13 +98,14 @@ function (p, Cocktail, FormView, SettingsMixin, AvatarMixin, Template,
 
     submit: function () {
       var self = this;
+      var account = self.getSignedInAccount();
 
       return self.toBlob()
         .then(function (data) {
-          return self.getSignedInAccount().uploadAvatar(data);
+          return account.uploadAvatar(data);
         })
         .then(function (result) {
-          self.updateProfileImage(new ProfileImage(result));
+          self.updateProfileImage(new ProfileImage(result), account);
           self.navigate('settings');
           return result;
         });
