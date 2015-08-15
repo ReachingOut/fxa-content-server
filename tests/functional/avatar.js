@@ -94,16 +94,6 @@ define([
         .end();
     },
 
-    'go to settings with an email NOT selected to see change link should not see one': function () {
-      return this.remote
-        .get(require.toUrl(SETTINGS_URL))
-
-        .setFindTimeout(intern.config.pageLoadTimeout)
-
-        // this link should not be present on the page at all
-        .then(FunctionalHelpers.noSuchElement(this, '.avatar-wrapper a.change-avatar'));
-    },
-
     'go to settings with an email selected to see change link then click on avatar to change': function () {
       var self = this;
       return signUp(self, emailAvatarAb)
@@ -224,7 +214,7 @@ define([
         .findByCssSelector('img[src*="https://secure.gravatar.com"]')
         .end()
 
-        .findByCssSelector('.avatar-panel .cancel')
+        .findByCssSelector('.avatar-panel #back')
           .click()
         .end()
 
@@ -312,7 +302,7 @@ define([
         .findById('avatar-camera')
         .end()
 
-        .findByCssSelector('.avatar-panel .cancel')
+        .findByCssSelector('.avatar-panel #back')
           .click()
         .end()
 
@@ -378,7 +368,7 @@ define([
         .findByCssSelector('.cropper')
         .end()
 
-        .findByCssSelector('.avatar-panel .cancel')
+        .findByCssSelector('.avatar-panel #back')
           .click()
         .end()
 

@@ -31,12 +31,6 @@ function ($, _, md5, Cocktail, FormView, AvatarMixin, ModalSettingsPanelMixin, S
     template: Template,
     className: 'avatar-gravatar',
 
-    events: {
-      'click #back': function () {
-        this.navigate('settings/avatar/change');
-      }
-    },
-
     context: function () {
       return {
         gravatar: this.gravatar
